@@ -4,6 +4,7 @@ import { AddCategory } from "utilities/api";
 import { FaPlus } from "react-icons/fa6";
 
 import IconSelector from "./icon-selector";
+import { StatusCode } from "utilities/status-code";
 
 interface ModalProps {
 	setIsModalOpen: Dispatch<SetStateAction<number>>;
@@ -19,9 +20,23 @@ function Modal({ setIsModalOpen, isModalOpen }: ModalProps) {
 		event.preventDefault();
 
 		if (name.length > 0) {
-			const newCategory = await AddCategory(name, icon);
+			try {
+				const [newCategory, statusCode] = await AddCategory(name, icon);
 
-			setCategoryExpenses((prev) => [...prev, newCategory]);
+				switch (statusCode) {
+					case StatusCode.CREATED:
+						setCategoryExpenses((prev) => [...prev, newCategory]);
+						break;
+					case StatusCode.UNAUTHORIZED:
+						return window.location.replace("/login");
+					default:
+						console.error(`Status Code: ${statusCode} :: An error occurred.`);
+						break;
+				}
+			} catch (error) {
+				console.error(error);
+			}
+
 			setIsModalOpen(-1);
 
 			setTimeout(() => {
@@ -33,14 +48,28 @@ function Modal({ setIsModalOpen, isModalOpen }: ModalProps) {
 	};
 
 	return (
-		<form onSubmit={onSubmit} data-open={isModalOpen} className="absolute -translate-y-full -translate-x-1/2 left-1/2 flex w-dvw max-w-[400px] p-4 data-[open='-1']:animate-fade-out data-[open='1']:animate-fade-in">
+		<form
+			onSubmit={onSubmit}
+			data-open={isModalOpen}
+			className="absolute -translate-y-full -translate-x-1/2 left-1/2 flex w-dvw max-w-[400px] p-4 data-[open='-1']:animate-fade-out data-[open='1']:animate-fade-in"
+		>
 			<div className="relative bg-white p-4 rounded-lg flex flex-col flex-grow gap-4 drop-shadow-md">
 				<h1 className="text-center text-xl font-extrabold">Add Category</h1>
 				<div className="relative flex flex-grow gap-4">
 					<IconSelector icon={icon} setIcon={setIcon} />
-					<input value={name} onChange={(event) => setName(event.target.value)} id="name" placeholder="Name" required className="flex-grow p-2 border border-gray-500 rounded-md" />
+					<input
+						value={name}
+						onChange={(event) => setName(event.target.value)}
+						id="name"
+						placeholder="Name"
+						required
+						className="flex-grow p-2 border border-gray-500 rounded-md"
+					/>
 				</div>
-				<button type="submit" className="w-full text-center p-2 bg-green-500 hover:bg-green-600 rounded-md text-white font-bold transition-colors shadow-md">
+				<button
+					type="submit"
+					className="w-full text-center p-2 bg-green-500 hover:bg-green-600 rounded-md text-white font-bold transition-colors shadow-md"
+				>
 					Submit
 				</button>
 				<div className="absolute w-[15px] aspect-square bottom-[1px] left-1/2 -translate-x-1/2 translate-y-1/2 rotate-45 bg-white"></div>
@@ -54,9 +83,16 @@ function AddCategoryButton() {
 
 	return (
 		<>
-			{isModalOpen !== 0 && <div data-open={isModalOpen} className="w-full h-dvh fixed top-0 left-0 bg-gray-500/30 backdrop-blur-sm data-[open='-1']:animate-fade-out data-[open='1']:animate-fade-in"></div>}
+			{isModalOpen !== 0 && (
+				<div
+					data-open={isModalOpen}
+					className="w-full h-dvh fixed top-0 left-0 bg-gray-500/30 backdrop-blur-sm data-[open='-1']:animate-fade-out data-[open='1']:animate-fade-in"
+				></div>
+			)}
 			<div className="relative">
-				{isModalOpen !== 0 && <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+				{isModalOpen !== 0 && (
+					<Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+				)}
 				<button
 					onClick={() =>
 						setIsModalOpen((prev) => {

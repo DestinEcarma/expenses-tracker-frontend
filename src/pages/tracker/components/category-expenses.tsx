@@ -5,7 +5,7 @@ import { GetIcon } from "../utilities/icons";
 import { useContext } from "react";
 
 import CircularProgressBar from "pages/tracker/components/circular-progress-bar";
-import AddItemButton from "./add-item-button";
+import AddTransactionButton from "./add-transaction-button";
 import Colors from "pages/tracker/utilities/colors";
 import EditCategoryButton from "./edit-category-button";
 
@@ -17,13 +17,25 @@ interface CategoryExpensesProps {
 	sumAmount: number;
 }
 
-function CategoryExpenseComponent({ id, icon, color, name, precent, amount, transactions, showLine }: CategoryExpenseComponentProps) {
+function CategoryExpenseComponent({
+	id,
+	icon,
+	color,
+	name,
+	precent,
+	amount,
+	transactions,
+	showLine,
+}: CategoryExpenseComponentProps) {
 	const Icon = GetIcon(icon);
 
 	return (
 		<div className="flex gap-4 px-4 last:mb-4">
 			<div className="relative h-20 aspect-square text-gray-300">
-				<a href={`./tracker/category?id=${id}`} className="w-full aspect-square outline-none hover:text-gray-500 transition-colors">
+				<a
+					href={`./tracker/category?id=${id}`}
+					className="w-full aspect-square outline-none hover:text-gray-500 transition-colors"
+				>
 					<CircularProgressBar percent={precent} borderColor={color}>
 						<Icon className="text-4xl text-shadow drop-shadow-md" />
 					</CircularProgressBar>
@@ -39,11 +51,13 @@ function CategoryExpenseComponent({ id, icon, color, name, precent, amount, tran
 				<div className="flex flex-col items-end justify-between w-max">
 					<span className="text-red-500 w-max">&#8369;{pad02f(amount)}</span>
 					<div className="flex gap-2 mr-[1px] text-white">
-						<AddItemButton name={name} id={id} />
+						<AddTransactionButton name={name} id={id} />
 						<EditCategoryButton id={id} name={name} icon={icon} />
 					</div>
 				</div>
-				{showLine && <hr className="absolute -bottom-2 border-1 border-gray-500 w-full" />}
+				{showLine && (
+					<hr className="absolute -bottom-2 border-1 border-gray-500 w-full" />
+				)}
 			</div>
 		</div>
 	);
@@ -62,7 +76,19 @@ export default function CategoryExpenses({ sumAmount }: CategoryExpensesProps) {
 					return 0;
 				})
 				.map((category, index) => {
-					return <CategoryExpenseComponent key={category.id} {...category} color={Colors[index % Colors.length]} precent={Math.min((category.amount / sumAmount) * 100, 100)} showLine={index !== length - 1} />;
+					return (
+						<CategoryExpenseComponent
+							key={category.id}
+							{...category}
+							color={Colors[index % Colors.length]}
+							precent={
+								sumAmount !== 0
+									? Math.min((category.amount / sumAmount) * 100, 100)
+									: 0
+							}
+							showLine={index !== length - 1}
+						/>
+					);
 				})}
 		</div>
 	);
