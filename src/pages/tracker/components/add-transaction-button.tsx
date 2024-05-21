@@ -20,7 +20,7 @@ function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 	const [description, setDescription] = useState("");
 	const [amount, setAmount] = useState("0");
 
-	const setCategoryExpenses = useSetCategoriesContext();
+	const setCategories = useSetCategoriesContext();
 	const amountInputRef = useRef<HTMLInputElement>(null);
 
 	const numberRegex = /^(^\.\d*$)?(^\d*\.\d$)?(^\d*\.)?(\d*)*$/;
@@ -35,11 +35,11 @@ function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 		}
 
 		try {
-			const [_, statusCode] = await AddTransaction(id, description, parseFloat(amount));
+			const statusCode = await AddTransaction(id, description, parseFloat(amount));
 
 			switch (statusCode) {
 				case StatusCode.CREATED:
-					setCategoryExpenses((prev) => {
+					setCategories((prev) => {
 						return prev.map((category) => {
 							if (category.id === id) {
 								category.amount += parseFloat(amount);

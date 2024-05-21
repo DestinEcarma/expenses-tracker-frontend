@@ -2,7 +2,7 @@ import { Category } from "pages/tracker/utilities/types";
 import { GetTransactionsData } from "pages/tracker/transactions/utilities/types";
 
 import camelcaseKeys from "camelcase-keys";
-import { StatusCode } from "./status-code";
+import { StatusCode as StatusCodes } from "./status-code";
 
 export type StatusCode = number;
 
@@ -49,7 +49,7 @@ const ERROR_MESSAGE = "The server encountered an error. Please try again later."
 
 export async function Auth(): Promise<StatusCode> {
 	return fetch(`${AUTH_URL}`, GET_METHOD).then((response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -62,7 +62,7 @@ export async function SignUp(username: string, password: string): Promise<Status
 		...POST_METHOD,
 		body: JSON.stringify({ username, password }),
 	}).then((response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -75,7 +75,7 @@ export async function Login(username: string, password: string): Promise<StatusC
 		...POST_METHOD,
 		body: JSON.stringify({ username, password }),
 	}).then((response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -85,7 +85,7 @@ export async function Login(username: string, password: string): Promise<StatusC
 
 export async function Logout(): Promise<StatusCode> {
 	return fetch(`${USER_URL}/logout`, DELETE_METHOD).then((response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -95,7 +95,7 @@ export async function Logout(): Promise<StatusCode> {
 
 export async function GetCategories(): Promise<[Category[], StatusCode]> {
 	return fetch(`${CATEGORIES_URL}`, GET_METHOD).then(async (response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -105,7 +105,7 @@ export async function GetCategories(): Promise<[Category[], StatusCode]> {
 
 export async function GetTransactions(categoryId: string): Promise<[GetTransactionsData, StatusCode]> {
 	return fetch(`${CATEGORY_URL}/${categoryId}/transactions`, GET_METHOD).then(async (response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -125,7 +125,7 @@ export async function AddCategory(name: string, icon: string): Promise<[Category
 		...POST_METHOD,
 		body: JSON.stringify({ name, icon }),
 	}).then(async (response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -144,20 +144,16 @@ export async function AddCategory(name: string, icon: string): Promise<[Category
 	});
 }
 
-export async function AddTransaction(
-	categoryId: string,
-	description: string,
-	amount: number,
-): Promise<[String, StatusCode]> {
+export async function AddTransaction(categoryId: string, description: string, amount: number): Promise<StatusCode> {
 	return fetch(`${CATEGORY_URL}/${categoryId}/transactions`, {
 		...POST_METHOD,
 		body: JSON.stringify({ amount, description }),
 	}).then(async (response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
-		return [(await response.json()).id, response.status];
+		return response.status;
 	});
 }
 
@@ -166,7 +162,7 @@ export async function EditCategory(id: string, name: string, icon: string): Prom
 		...PATCH_METHOD,
 		body: JSON.stringify({ name, icon }),
 	}).then((response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -176,7 +172,7 @@ export async function EditCategory(id: string, name: string, icon: string): Prom
 
 export async function DeleteCategory(id: string): Promise<StatusCode> {
 	return fetch(`${CATEGORIES_URL}/${id}`, DELETE_METHOD).then((response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 
@@ -186,7 +182,7 @@ export async function DeleteCategory(id: string): Promise<StatusCode> {
 
 export async function DeleteTransaction(categoryId: string, transactionId: string): Promise<StatusCode> {
 	return fetch(`${CATEGORY_URL}/${categoryId}/transactions/${transactionId}`, DELETE_METHOD).then((response) => {
-		if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+		if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 			throw new Error(ERROR_MESSAGE);
 		}
 

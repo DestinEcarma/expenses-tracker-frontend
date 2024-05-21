@@ -10,20 +10,6 @@ import { useEffect, useState } from "react";
 import AddCategoryButton from "./components/add-category-button";
 import Categories from "./components/categories";
 
-async function FetchData(): Promise<Category[]> {
-	const [data, statusCode] = await GetCategories();
-
-	switch (statusCode) {
-		case StatusCode.OK:
-			return data;
-		case StatusCode.UNAUTHORIZED:
-			window.location.replace("/login");
-			return [];
-		default:
-			throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-	}
-}
-
 function Tracker() {
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [sumAmount, setSumAmount] = useState(0);
@@ -44,7 +30,7 @@ function Tracker() {
 				}
 			})
 			.catch(alert);
-	}, []);
+	}, [navigate]);
 
 	useEffect(() => {
 		setSumAmount(categories.reduce((acc, expense) => acc + expense.amount, 0));

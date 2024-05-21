@@ -1,40 +1,35 @@
 name: CI
 
 on:
-    push:
-        branches: ["main"]
-    pull_request:
-        branches: ["main"]
+	pull_request:
+	push:
+		branches:
+			- main
 
 jobs:
-    lint:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+	lint:
+		name: Lint
+		runs-on: ubuntu-latest
+		steps:
+			- name: Checkout
+				uses: actions/checkout@v4
 
-            - name: Lint
-              uses: github/super-linter@v4
-              env:
-                  DEFAULT_BRANCH: "main"
-                  VALIDATE_ALL_CODEBASE: false
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+			- name: Setup Node.js
+				uses: actions/setup-node@v4
+				with:
+					node-version: "18"
 
-    styling:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+			- name: Install dependencies
+				run: npm install
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: "16"
+			- name: Check JSDoc Types
+				run: yarn lint:typecheck
 
-            - name: Install dependencies
-              run: npm install
+			- name: Lint ESLint
+				run: yarn lint:eslint
 
-            - name: Check styling with Prettier
-              run: npm run prettier:check
+			- name: Lint Prettier
+				run: yarn lint:prettier
+
+			- name: Check File Changes
+				run: echo "Listing changed files:" && git diff --name-only --exit-code && echo "No files changed during lint."

@@ -22,7 +22,7 @@ function CircularProgressBar({
 			setBefore(after);
 			setAfter(percent);
 		}
-	}, [percent]);
+	}, [percent, after]);
 
 	const styling = {
 		"--percent": percent + "%",
