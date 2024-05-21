@@ -1,10 +1,7 @@
 import { FormEvent, useContext, useState } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { DeleteTransaction } from "utilities/api";
-import {
-	CategoryIdContext,
-	useTransactionsContext,
-} from "../utilities/item-expenses-context";
+import { CategoryIdContext, useTransactionsContext } from "../utilities/item-expenses-context";
 
 interface DeleteButtonProps {
 	id: string;
@@ -25,9 +22,7 @@ function DeleteButton({ id: transactionId }: DeleteButtonProps) {
 			event.preventDefault();
 
 			if ((await DeleteTransaction(categoryId, transactionId)) === 200) {
-				setTransactions((prev) =>
-					prev.filter((item) => item.id !== transactionId)
-				);
+				setTransactions((prev) => prev.filter((item) => item.id !== transactionId));
 			}
 
 			closeModal();
@@ -49,9 +44,7 @@ function DeleteButton({ id: transactionId }: DeleteButtonProps) {
 						className="absolute w-max data-[open='-1']:animate-fade-out data-[open='1']:animate-fade-in"
 					>
 						<div className="left-0 flex flex-col gap-4 w-max bg-white p-4 rounded-md drop-shadow-md">
-							<h1 className="text-center text-black text-xl font-bold">
-								Are you sure
-							</h1>
+							<h1 className="text-center text-black text-xl font-bold">Are you sure</h1>
 							<p className="text-gray-400">This action cannot be undone.</p>
 							<div className="flex-grow flex justify-between font-bold text-white">
 								<button

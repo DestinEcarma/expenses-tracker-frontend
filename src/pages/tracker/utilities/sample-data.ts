@@ -1,6 +1,6 @@
-import { RawCategoryExpense } from "./types";
+import { Category } from "./types";
 
-const data: RawCategoryExpense[] = [
+const data: Category[] = [
 	{
 		id: "0",
 		icon: "fa:FaHamburger",

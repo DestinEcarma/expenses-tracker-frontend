@@ -8,7 +8,12 @@ interface CircularProgressBarProps {
 	children?: ReactNode;
 }
 
-function CircularProgressBar({ percent = 0, borderColor = "#ff8000", borderWidth = "8px", children }: CircularProgressBarProps) {
+function CircularProgressBar({
+	percent = 0,
+	borderColor = "#ff8000",
+	borderWidth = "8px",
+	children,
+}: CircularProgressBarProps) {
 	const [before, setBefore] = useState(0);
 	const [after, setAfter] = useState(percent);
 

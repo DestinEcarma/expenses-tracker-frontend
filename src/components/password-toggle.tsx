@@ -6,11 +6,7 @@ function PasswordToggle(className: string | undefined): [string, JSX.Element] {
 	const [visible, setVisibility] = useState(false);
 
 	const button = (
-		<button
-			type="button"
-			className={className}
-			onClick={() => setVisibility((visible) => !visible)}
-		>
+		<button type="button" className={className} onClick={() => setVisibility((visible) => !visible)}>
 			{visible ? <AiFillEyeInvisible /> : <AiFillEye />}
 		</button>
 	);

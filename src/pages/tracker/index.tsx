@@ -1,56 +1,54 @@
-import {
-	RawCategoryExpensesContext,
-	SetRawCategoryExpensesContext,
-} from "./utilities/raw-category-expenses-context";
-import { RawCategoryExpense } from "./utilities/types";
-import { StatusCode } from "utilities/status-code";
-import { pad02f } from "utilities/stringUtil";
-import { useEffect, useState } from "react";
+import { CategoriesContext, SetCategoriesContext } from "./utilities/categories-context";
 import { LuLineChart, LuLogOut } from "react-icons/lu";
 import { GetCategories, Logout } from "utilities/api";
-// import { HiMenu } from "react-icons/hi";
+import { StatusCode } from "utilities/status-code";
+import { useNavigate } from "react-router-dom";
+import { pad02f } from "utilities/stringUtil";
+import { Category } from "./utilities/types";
+import { useEffect, useState } from "react";
 
 import AddCategoryButton from "./components/add-category-button";
-import CategoryExpenses from "./components/category-expenses";
+import Categories from "./components/categories";
+
+async function FetchData(): Promise<Category[]> {
+	const [data, statusCode] = await GetCategories();
+
+	switch (statusCode) {
+		case StatusCode.OK:
+			return data;
+		case StatusCode.UNAUTHORIZED:
+			window.location.replace("/login");
+			return [];
+		default:
+			throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
+	}
+}
 
 function Tracker() {
-	const [rawCategoryExpenses, setRawCategoryExpenses] = useState<
-		RawCategoryExpense[]
-	>([]);
+	const [categories, setCategories] = useState<Category[]>([]);
 	const [sumAmount, setSumAmount] = useState(0);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		(async () => {
-			try {
-				const [rawCategoryExpenses, statusCode] = await GetCategories();
-
+		GetCategories()
+			.then(([categories, statusCode]) => {
 				switch (statusCode) {
 					case StatusCode.OK:
-						setRawCategoryExpenses(rawCategoryExpenses);
-						setSumAmount(
-							rawCategoryExpenses.reduce(
-								(acc, expense) => acc + expense.amount,
-								0
-							)
-						);
+						setCategories(categories);
+						setSumAmount(categories.reduce((acc, expense) => acc + expense.amount, 0));
 						return;
 					case StatusCode.UNAUTHORIZED:
-						return window.location.replace("/login");
+						return navigate("/login");
 					default:
-						console.error(`Status Code: ${statusCode} :: An error occurred.`);
-						return;
+						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
 				}
-			} catch (error) {
-				console.error(error);
-			}
-		})();
+			})
+			.catch(alert);
 	}, []);
 
 	useEffect(() => {
-		setSumAmount(
-			rawCategoryExpenses.reduce((acc, expense) => acc + expense.amount, 0)
-		);
-	}, [rawCategoryExpenses]);
+		setSumAmount(categories.reduce((acc, expense) => acc + expense.amount, 0));
+	}, [categories]);
 
 	const thisMonth = new Date().toLocaleString("default", {
 		month: "short",
@@ -58,17 +56,13 @@ function Tracker() {
 	});
 
 	const logout = async () => {
-		try {
-			const statusCode = await Logout();
-
-			if (statusCode === StatusCode.OK) {
+		Logout()
+			.then(() => {
 				window.location.replace("/login");
-			} else {
-				console.error(`Status Code: ${statusCode} :: An error occurred.`);
-			}
-		} catch (error) {
-			console.error(error);
-		}
+			})
+			.catch(() => {
+				alert("An error occurred. Please try again.");
+			});
 	};
 
 	return (
@@ -76,19 +70,15 @@ function Tracker() {
 			<div className="mb-4 py-4">
 				<h1 className="font-bold text-center">EXPENSES</h1>
 			</div>
-			<SetRawCategoryExpensesContext.Provider value={setRawCategoryExpenses}>
-				<RawCategoryExpensesContext.Provider value={rawCategoryExpenses}>
+			<SetCategoriesContext.Provider value={setCategories}>
+				<CategoriesContext.Provider value={categories}>
 					<div className="flex flex-col gap-10 flex-grow overflow-auto">
 						<div className="flex flex-col mx-auto w-min">
-							<span className="leading-none tracking-tight font-bold text-gray-400 w-max">
-								{thisMonth}
-							</span>
-							<span className="mb-4 font-extrabold text-4xl w-min">
-								&#8369;{pad02f(sumAmount)}
-							</span>
+							<span className="leading-none tracking-tight font-bold text-gray-400 w-max">{thisMonth}</span>
+							<span className="mb-4 font-extrabold text-4xl w-min">&#8369;{pad02f(sumAmount)}</span>
 						</div>
 						<div className="flex-grow overflow-hidden">
-							<CategoryExpenses sumAmount={sumAmount} />
+							<Categories sumAmount={sumAmount} />
 						</div>
 					</div>
 					<div className="px-4 pb-4">
@@ -97,16 +87,13 @@ function Tracker() {
 								<LuLineChart className="text-3xl" />
 							</button>
 							<AddCategoryButton />
-							{/* <button>
-								<HiMenu className="text-3xl" />
-							</button> */}
 							<button onClick={logout} type="button">
 								<LuLogOut className="text-3xl" />
 							</button>
 						</div>
 					</div>
-				</RawCategoryExpensesContext.Provider>
-			</SetRawCategoryExpensesContext.Provider>
+				</CategoriesContext.Provider>
+			</SetCategoriesContext.Provider>
 		</div>
 	);
 }

@@ -1,32 +1,25 @@
-import { RawCategoryExpensesContext } from "pages/tracker/utilities/raw-category-expenses-context";
-import { CategoryExpense as CategoryExpensesType } from "../utilities/types";
+import { CategoriesContext } from "pages/tracker/utilities/categories-context";
 import { pad02f } from "utilities/stringUtil";
 import { GetIcon } from "../utilities/icons";
 import { useContext } from "react";
+import { Category as CategoryType } from "../utilities/types";
 
 import CircularProgressBar from "pages/tracker/components/circular-progress-bar";
 import AddTransactionButton from "./add-transaction-button";
 import Colors from "pages/tracker/utilities/colors";
 import EditCategoryButton from "./edit-category-button";
 
-interface CategoryExpenseComponentProps extends CategoryExpensesType {
+interface CategoryProps extends CategoryType {
 	showLine: boolean;
+	precent: number;
+	color: string;
 }
 
-interface CategoryExpensesProps {
+interface CategoriesProps {
 	sumAmount: number;
 }
 
-function CategoryExpenseComponent({
-	id,
-	icon,
-	color,
-	name,
-	precent,
-	amount,
-	transactions,
-	showLine,
-}: CategoryExpenseComponentProps) {
+function Category({ id, icon, color, name, precent, amount, transactions, showLine }: CategoryProps) {
 	const Icon = GetIcon(icon);
 
 	return (
@@ -55,21 +48,19 @@ function CategoryExpenseComponent({
 						<EditCategoryButton id={id} name={name} icon={icon} />
 					</div>
 				</div>
-				{showLine && (
-					<hr className="absolute -bottom-2 border-1 border-gray-500 w-full" />
-				)}
+				{showLine && <hr className="absolute -bottom-2 border-1 border-gray-500 w-full" />}
 			</div>
 		</div>
 	);
 }
 
-export default function CategoryExpenses({ sumAmount }: CategoryExpensesProps) {
-	const rawCategoryExpenses = useContext(RawCategoryExpensesContext);
-	const length = rawCategoryExpenses.length;
+export default function Categories({ sumAmount }: CategoriesProps) {
+	const categories = useContext(CategoriesContext);
+	const length = categories.length;
 
 	return (
 		<div className="flex flex-col gap-4 h-full overflow-y-auto no-scrollbar">
-			{rawCategoryExpenses
+			{categories
 				.sort((a, b) => {
 					if (a.amount < b.amount) return 1;
 					if (a.amount > b.amount) return -1;
@@ -77,16 +68,12 @@ export default function CategoryExpenses({ sumAmount }: CategoryExpensesProps) {
 				})
 				.map((category, index) => {
 					return (
-						<CategoryExpenseComponent
+						<Category
 							key={category.id}
 							{...category}
-							color={Colors[index % Colors.length]}
-							precent={
-								sumAmount !== 0
-									? Math.min((category.amount / sumAmount) * 100, 100)
-									: 0
-							}
 							showLine={index !== length - 1}
+							color={Colors[index % Colors.length]}
+							precent={Math.min(100, (category.amount / (sumAmount > 0 ? sumAmount : 1)) * 100)}
 						/>
 					);
 				})}

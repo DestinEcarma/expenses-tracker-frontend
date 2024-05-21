@@ -18,5 +18,7 @@ Icons.faArray.forEach(([key, value]) => (Icons.fa[key] = value));
 
 export function GetIcon(icon: string): IconType {
 	const iconSplit = icon.split(":");
-	return (Icons[iconSplit[0] as keyof typeof Icons] as IconList)[iconSplit[1] as keyof (typeof Icons)[keyof typeof Icons]] as IconType;
+	return (Icons[iconSplit[0] as keyof typeof Icons] as IconList)[
+		iconSplit[1] as keyof (typeof Icons)[keyof typeof Icons]
+	] as IconType;
 }

@@ -20,7 +20,11 @@ function Selector({ setIcon }: SelectorProps) {
 	useEffect(() => {
 		const handleIntersect = (entries: IntersectionObserverEntry[]) => {
 			entries.forEach((entry) => {
-				if (entry.isIntersecting) setShowIcons((prevState) => ({ ...prevState, [entry.target.id]: true }));
+				if (entry.isIntersecting)
+					setShowIcons((prevState) => ({
+						...prevState,
+						[entry.target.id]: true,
+					}));
 			});
 		};
 
@@ -39,11 +43,26 @@ function Selector({ setIcon }: SelectorProps) {
 
 	return (
 		<>
-			<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search..." className="flex-grow p-2 border border-gray-500 rounded-md" />
+			<input
+				value={search}
+				onChange={(event) => setSearch(event.target.value)}
+				placeholder="Search..."
+				className="flex-grow p-2 border border-gray-500 rounded-md"
+			/>
 			<div className="flex-grow grid grid-cols-6 h-[300px] content-start rounded-md border border-gray-500 overflow-y-auto text-2xl items-center no-scrollbar">
 				{Icons.faArray.map(([key, Icon]) => (
-					<div data-show={search.length < 3 ? true : key.toLocaleLowerCase().includes(search.toLowerCase())} key={key} className="w-full aspect-square flex justify-center items-center p-1 data-[show=false]:hidden">
-						<button onClick={() => setIcon(`fa:${key}`)} id={key} ref={(el) => el && iconsRef.current.push(el)} type="button" className="flex justify-center items-center rounded shadow aspect-square w-full hover:bg-gray-200 hover:scale-110 transition-all">
+					<div
+						data-show={search.length < 3 ? true : key.toLocaleLowerCase().includes(search.toLowerCase())}
+						key={key}
+						className="w-full aspect-square flex justify-center items-center p-1 data-[show=false]:hidden"
+					>
+						<button
+							onClick={() => setIcon(`fa:${key}`)}
+							id={key}
+							ref={(el) => el && iconsRef.current.push(el)}
+							type="button"
+							className="flex justify-center items-center rounded shadow aspect-square w-full hover:bg-gray-200 hover:scale-110 transition-all"
+						>
 							{showIcons[key] && <Icon />}
 						</button>
 					</div>
@@ -59,7 +78,10 @@ function IconSelector({ setOffset, setIcon, icon }: IconSelectorProps) {
 	const IconDisplay = GetIcon(icon);
 
 	const modal = (
-		<div data-open={isModalOpen} className="absolute left-0 top-0 -translate-y-full w-full data-[open='-1']:animate-fade-out data-[open='1']:animate-fade-in">
+		<div
+			data-open={isModalOpen}
+			className="absolute left-0 top-0 -translate-y-full w-full data-[open='-1']:animate-fade-out data-[open='1']:animate-fade-in"
+		>
 			<div className="relative flex flex-col gap-4 w-full bg-white mb-4 rounded-md border border-gray-500 p-4">
 				<Selector
 					setIcon={(name) => {

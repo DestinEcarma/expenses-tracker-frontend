@@ -12,7 +12,6 @@ interface InputProps {
 	defaultValue?: string | number | readonly string[];
 }
 
-// prettier-ignore
 function Input({
 	min = 0,
 	max = 0,
@@ -37,7 +36,7 @@ function Input({
 			className={className}
 			defaultValue={defaultValue}
 			onChange={(event) => setHolder(event.target.value)}
-		/>
+		/>,
 	];
 }
 

@@ -1,38 +1,38 @@
-import { BsPersonFillDown } from "react-icons/bs";
-import { Login as ApiLogin, Auth } from "utilities/api";
-import { IoPersonSharp } from "react-icons/io5";
-import { MdLock } from "react-icons/md";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { Login as ApiLogin, Auth } from "utilities/api";
+import { StatusCode } from "utilities/status-code";
+import { BsPersonFillDown } from "react-icons/bs";
+import { IoPersonSharp } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { MdLock } from "react-icons/md";
 
 import PasswordToggle from "components/password-toggle";
-import { StatusCode } from "utilities/status-code";
 
 function Login() {
 	const [{ username, password }, setForm] = useState({
 		username: "",
 		password: "",
 	});
-
 	const usernameRef = useRef<HTMLInputElement>(null);
 	const passwordRef = useRef<HTMLInputElement>(null);
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		(async () => {
-			try {
-				const statusCode = await Auth();
-
-				if (statusCode === StatusCode.OK) {
-					return window.location.replace("/tracker");
+		Auth()
+			.then((statusCode) => {
+				switch (statusCode) {
+					case StatusCode.OK:
+						return navigate("/tracker");
+					case StatusCode.UNAUTHORIZED:
+						return;
+					default:
+						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
 				}
-			} catch (error) {
-				console.error(error);
-			}
-		})();
-	}, []);
+			})
+			.catch(alert);
+	}, [navigate]);
 
-	const [passwordType, button] = PasswordToggle(
-		"text-2xl text-gray-400 text-2xl text-gray-400"
-	);
+	const [passwordType, button] = PasswordToggle("text-2xl text-gray-400 text-2xl text-gray-400");
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
@@ -46,41 +46,29 @@ function Login() {
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		try {
-			let statusCode = await ApiLogin(username, password);
-
-			switch (statusCode) {
-				case StatusCode.OK:
-				case StatusCode.CREATED:
-					return window.location.replace("/tracker");
-				case StatusCode.BAD_REQUEST:
-					usernameRef.current?.setCustomValidity(
-						"Invalid username or password."
-					);
-					passwordRef.current?.setCustomValidity(
-						"Invalid username or password."
-					);
-					usernameRef.current?.reportValidity();
-					passwordRef.current?.reportValidity();
-					return;
-				default:
-					return console.error(
-						`Status Code: ${statusCode} :: An error occurred.`
-					);
-			}
-		} catch (error) {
-			console.error(error);
-		}
+		ApiLogin(username, password)
+			.then((statusCode) => {
+				switch (statusCode) {
+					case StatusCode.CREATED:
+						return navigate("/tracker");
+					case StatusCode.BAD_REQUEST:
+						usernameRef.current?.setCustomValidity("Invalid username or password.");
+						passwordRef.current?.setCustomValidity("Invalid username or password.");
+						usernameRef.current?.reportValidity();
+						passwordRef.current?.reportValidity();
+						return;
+					default:
+						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
+				}
+			})
+			.catch(alert);
 	};
 
 	return (
-		<form
-			onSubmit={onSubmit}
-			className="h-full max-w-[720px] mx-auto px-4 py-20 flex flex-col"
-		>
+		<form onSubmit={onSubmit} className="h-full max-w-[720px] mx-auto px-4 py-20 flex flex-col">
 			<h1 className="flex justify-center text-9xl mb-8 text-blue-600 drop-shadow-md">
 				<BsPersonFillDown />
 			</h1>

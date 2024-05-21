@@ -1,10 +1,11 @@
-import { useSetRawCategoryExpensesContext } from "pages/tracker/utilities/raw-category-expenses-context";
+import { useSetCategoriesContext } from "pages/tracker/utilities/categories-context";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { AddCategory } from "utilities/api";
 import { FaPlus } from "react-icons/fa6";
 
 import IconSelector from "./icon-selector";
 import { StatusCode } from "utilities/status-code";
+import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
 	setIsModalOpen: Dispatch<SetStateAction<number>>;
@@ -14,37 +15,31 @@ interface ModalProps {
 function Modal({ setIsModalOpen, isModalOpen }: ModalProps) {
 	const [icon, setIcon] = useState("fa:FaHamburger");
 	const [name, setName] = useState("");
-	const setCategoryExpenses = useSetRawCategoryExpensesContext();
+	const [disabled, setDisabled] = useState(false);
+	const setCategories = useSetCategoriesContext();
+	const navigate = useNavigate();
 
-	const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setDisabled(true);
 
-		if (name.length > 0) {
-			try {
-				const [newCategory, statusCode] = await AddCategory(name, icon);
-
+		AddCategory(name, icon)
+			.then(([newCategory, statusCode]) => {
 				switch (statusCode) {
 					case StatusCode.CREATED:
-						setCategoryExpenses((prev) => [...prev, newCategory]);
-						break;
+						setCategories((prev) => [...prev, newCategory]);
+						return;
 					case StatusCode.UNAUTHORIZED:
-						return window.location.replace("/login");
+						return navigate("/login");
 					default:
-						console.error(`Status Code: ${statusCode} :: An error occurred.`);
-						break;
+						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
 				}
-			} catch (error) {
-				console.error(error);
-			}
-
-			setIsModalOpen(-1);
-
-			setTimeout(() => {
-				setIsModalOpen(0);
-				setName("");
-				setIcon("FaHamburger");
-			}, 200);
-		}
+			})
+			.catch(alert)
+			.then(() => {
+				setIsModalOpen(-1);
+				setTimeout(() => setIsModalOpen(0), 200);
+			});
 	};
 
 	return (
@@ -61,14 +56,16 @@ function Modal({ setIsModalOpen, isModalOpen }: ModalProps) {
 						value={name}
 						onChange={(event) => setName(event.target.value)}
 						id="name"
+						name="name"
 						placeholder="Name"
 						required
 						className="flex-grow p-2 border border-gray-500 rounded-md"
 					/>
 				</div>
 				<button
+					disabled={disabled}
 					type="submit"
-					className="w-full text-center p-2 bg-green-500 hover:bg-green-600 rounded-md text-white font-bold transition-colors shadow-md"
+					className="w-full text-center p-2 bg-green-500 hover:bg-green-600 rounded-md text-white font-bold transition-colors shadow-md disabled:bg-gray-400"
 				>
 					Submit
 				</button>
@@ -90,9 +87,7 @@ function AddCategoryButton() {
 				></div>
 			)}
 			<div className="relative">
-				{isModalOpen !== 0 && (
-					<Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-				)}
+				{isModalOpen !== 0 && <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
 				<button
 					onClick={() =>
 						setIsModalOpen((prev) => {
