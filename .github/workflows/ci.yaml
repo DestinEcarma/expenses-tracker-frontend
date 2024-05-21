@@ -19,11 +19,12 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  cache: "yarn"
                   node-version: "18"
+                  check-latest: true
+                  cache: "npm"
 
             - name: Install dependencies
-              run: npm install
+              run: npm ci
 
             - name: Check JSDoc Types
               run: yarn lint:typecheck
