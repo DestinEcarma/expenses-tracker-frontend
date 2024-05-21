@@ -19,20 +19,20 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  cache: "node-modules"
+                  cache: "yarn"
                   node-version: "18"
 
             - name: Install dependencies
               run: npm install
 
             - name: Check JSDoc Types
-              run: npm run lint:typecheck
+              run: yarn lint:typecheck
 
             - name: Lint ESLint
-              run: npm run lint:eslint
+              run: yarn lint:eslint
 
             - name: Lint Prettier
-              run: npm run lint:prettier
+              run: yarn lint:prettier
 
             - name: Check File Changes
               run: echo "Listing changed files:" && git diff --name-only --exit-code && echo "No files changed during lint."
