@@ -20,7 +20,6 @@ function CategoryItems() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		const id = searchParams.get("id");
 
 		if (id) {
@@ -40,7 +39,6 @@ function CategoryItems() {
 						setSumAmount(transactions.reduce((acc, item) => acc + item.amount, 0));
 						return;
 					case StatusCode.UNAUTHORIZED:
-						// eslint-disable-next-line react-hooks/exhaustive-deps
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
