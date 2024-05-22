@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SignUp as ApiSignUp, Auth } from "services/api";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { BsPersonFillDown } from "react-icons/bs";
 import { IoPersonSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -23,9 +23,9 @@ function SignUp() {
 		Auth()
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						return navigate("/tracker");
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return;
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
@@ -49,9 +49,9 @@ function SignUp() {
 		ApiSignUp(username, password)
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.CREATED:
+					case StatusCodes.CREATED:
 						return window.location.replace("/tracker");
-					case StatusCode.CONFLICT:
+					case StatusCodes.CONFLICT:
 						usernameRef.current?.setCustomValidity("Username already exists.");
 						usernameRef.current?.reportValidity();
 						return;

@@ -1,7 +1,7 @@
 import { CategoriesContext, SetCategoriesContext } from "./utilities/categories-context";
 import { LuLineChart, LuLogOut } from "react-icons/lu";
 import { GetCategories, Logout } from "services/api";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { pad02f } from "utilities/stringUtil";
 import { Category } from "./utilities/types";
@@ -20,11 +20,11 @@ function Tracker() {
 		GetCategories()
 			.then(([categories, statusCode]) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						setCategories(categories);
 						setSumAmount(categories.reduce((acc, category) => acc + category.amount, 0));
 						return;
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
@@ -46,7 +46,7 @@ function Tracker() {
 		Logout()
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);

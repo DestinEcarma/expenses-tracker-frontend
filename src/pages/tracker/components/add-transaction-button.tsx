@@ -1,6 +1,6 @@
 import { useSetCategoriesContext } from "pages/tracker/utilities/categories-context";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { AddTransaction } from "services/api";
 import { FaPlus } from "react-icons/fa";
@@ -42,7 +42,7 @@ function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 		AddTransaction(id, description, parseFloat(amount))
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.CREATED:
+					case StatusCodes.CREATED:
 						setCategories((prev) => {
 							return prev.map((category) => {
 								if (category.id === id) {
@@ -54,9 +54,9 @@ function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 							});
 						});
 						return;
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return navigate("/login");
-					case StatusCode.BAD_REQUEST:
+					case StatusCodes.BAD_REQUEST:
 						amountInputRef.current?.setCustomValidity("An error occurred. Please try again.");
 						amountInputRef.current?.reportValidity();
 						return;

@@ -1,6 +1,6 @@
 import { CategoryIdContext, useTransactionsContext } from "../utilities/transactions-context";
 import { FormEvent, useContext, useState } from "react";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { DeleteTransaction } from "services/api";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa6";
@@ -28,10 +28,10 @@ function Modal({ closeModal, id, isModalOpen }: ModalProps) {
 		DeleteTransaction(categoryId, id)
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						setTransactions((prev) => prev.filter((item) => item.id !== id));
 						return;
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);

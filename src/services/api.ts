@@ -1,6 +1,6 @@
 import { GetTransactionsData, Transaction } from "pages/tracker/transactions/utilities/types";
 import { Category } from "pages/tracker/utilities/types";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import axios, { AxiosResponse } from "axios";
 
 interface RawTransaction extends Omit<Transaction, "createdAt"> {
@@ -27,7 +27,7 @@ const API = axios.create({
 // Reusable Reponse Handler functions
 
 async function SimpleResponseHanlder(response: AxiosResponse<any, any>): Promise<StatusCode> {
-	if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+	if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 		throw new Error("The server encountered an error. Please try again later.");
 	}
 
@@ -35,7 +35,7 @@ async function SimpleResponseHanlder(response: AxiosResponse<any, any>): Promise
 }
 
 async function DateResponseHandler<T>(response: AxiosResponse<T, any>): Promise<[T, StatusCode]> {
-	if (response.status === StatusCode.INTERNAL_SERVER_ERROR) {
+	if (response.status === StatusCodes.INTERNAL_SERVER_ERROR) {
 		throw new Error("The server encountered an error. Please try again later.");
 	}
 

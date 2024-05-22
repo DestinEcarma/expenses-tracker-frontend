@@ -1,5 +1,5 @@
 import { useSetCategoriesContext } from "pages/tracker/utilities/categories-context";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import { AddCategory } from "services/api";
@@ -27,10 +27,10 @@ function Modal({ closeModal, isModalOpen }: ModalProps) {
 		AddCategory(name, icon)
 			.then(([newCategory, statusCode]) => {
 				switch (statusCode) {
-					case StatusCode.CREATED:
+					case StatusCodes.CREATED:
 						setCategories((prev) => [...prev, newCategory]);
 						return;
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);

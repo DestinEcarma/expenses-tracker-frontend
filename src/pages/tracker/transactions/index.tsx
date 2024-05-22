@@ -1,7 +1,7 @@
 import { TransactionsContext, SetTransactionsContext, CategoryIdContext } from "./utilities/transactions-context";
 import { Transaction as TransactionsType } from "./utilities/types";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { GetTransactions } from "services/api";
 import { pad02f } from "utilities/stringUtil";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -37,12 +37,12 @@ function CategoryItems() {
 		GetTransactions(categoryId)
 			.then(([{ category, transactions }, statusCode]) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						setTitle(category.name);
 						setTransactions(transactions);
 						setSumAmount(transactions.reduce((acc, item) => acc + item.amount, 0));
 						return;
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);

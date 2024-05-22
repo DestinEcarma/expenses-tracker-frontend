@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Auth, Login as ApiLogin } from "services/api";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { BsPersonFillDown } from "react-icons/bs";
 import { IoPersonSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
@@ -23,9 +23,9 @@ function Login() {
 		Auth()
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						return navigate("/tracker");
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return;
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
@@ -52,9 +52,9 @@ function Login() {
 		ApiLogin(username, password)
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.CREATED:
+					case StatusCodes.CREATED:
 						return navigate("/tracker");
-					case StatusCode.BAD_REQUEST:
+					case StatusCodes.BAD_REQUEST:
 						usernameRef.current?.setCustomValidity("Invalid username or password.");
 						passwordRef.current?.setCustomValidity("Invalid username or password.");
 						usernameRef.current?.reportValidity();

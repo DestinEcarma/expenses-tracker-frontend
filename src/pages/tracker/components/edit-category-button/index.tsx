@@ -1,6 +1,6 @@
 import { useSetCategoriesContext } from "../../utilities/categories-context";
 import { DeleteCategory, EditCategory } from "services/api";
-import { StatusCode } from "utilities/status-code";
+import { StatusCodes } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
 import { FormEvent, useState } from "react";
@@ -34,10 +34,10 @@ function Modal({ closeModal, id, name, icon, isModalOpen }: ModalProps) {
 		DeleteCategory(id)
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						setCategories((prev) => prev.filter((category) => category.id !== id));
 						return;
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
@@ -54,14 +54,14 @@ function Modal({ closeModal, id, name, icon, isModalOpen }: ModalProps) {
 		EditCategory(id, newName, newIcon)
 			.then((statusCode) => {
 				switch (statusCode) {
-					case StatusCode.OK:
+					case StatusCodes.OK:
 						setCategories((prev) => {
 							return prev.map((category) => {
 								return category.id === id ? { ...category, name: newName, icon: newIcon } : category;
 							});
 						});
 						return;
-					case StatusCode.UNAUTHORIZED:
+					case StatusCodes.UNAUTHORIZED:
 						return navigate("/login");
 					default:
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
