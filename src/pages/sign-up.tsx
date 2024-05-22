@@ -120,6 +120,7 @@ function SignUp() {
 			<div className="flex flex-col gap-4 items-center">
 				<button
 					disabled={disabled}
+					type="submit"
 					className="text-white font-bold tracking-wider py-3 w-1/2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 transition-colors disabled:bg-gray-400"
 				>
 					Sign Up
