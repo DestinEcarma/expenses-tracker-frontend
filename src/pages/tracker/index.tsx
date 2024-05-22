@@ -1,6 +1,6 @@
 import { CategoriesContext, SetCategoriesContext } from "./utilities/categories-context";
 import { LuLineChart, LuLogOut } from "react-icons/lu";
-import { GetCategories, Logout } from "utilities/api";
+import { GetCategories, Logout } from "services/api";
 import { StatusCode } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { pad02f } from "utilities/stringUtil";

@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Login as ApiLogin, Auth } from "utilities/api";
+import { Auth, Login as ApiLogin } from "services/api";
 import { StatusCode } from "utilities/status-code";
 import { BsPersonFillDown } from "react-icons/bs";
 import { IoPersonSharp } from "react-icons/io5";

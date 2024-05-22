@@ -1,9 +1,9 @@
-import { FormEvent, useContext, useState } from "react";
-import { FaTrash } from "react-icons/fa6";
-import { DeleteTransaction } from "utilities/api";
 import { CategoryIdContext, useTransactionsContext } from "../utilities/transactions-context";
+import { FormEvent, useContext, useState } from "react";
 import { StatusCode } from "utilities/status-code";
+import { DeleteTransaction } from "services/api";
 import { useNavigate } from "react-router-dom";
+import { FaTrash } from "react-icons/fa6";
 
 interface DeleteButtonProps {
 	id: string;

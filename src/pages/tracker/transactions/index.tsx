@@ -2,7 +2,7 @@ import { TransactionsContext, SetTransactionsContext, CategoryIdContext } from "
 import { Transaction as TransactionsType } from "./utilities/types";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { StatusCode } from "utilities/status-code";
-import { GetTransactions } from "utilities/api";
+import { GetTransactions } from "services/api";
 import { pad02f } from "utilities/stringUtil";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useEffect, useState } from "react";
