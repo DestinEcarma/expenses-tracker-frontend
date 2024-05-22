@@ -8,15 +8,15 @@ export function mapCategories(categories: Category[], sumAmount = 0): Category[]
 			if (a.amount > b.amount) return -1;
 			return 0;
 		})
-		.map((expense, index) => {
+		.map((category, index) => {
 			return {
-				id: expense.id,
-				icon: expense.icon,
+				id: category.id,
+				icon: category.icon,
 				color: Colors[index % Colors.length],
-				name: expense.name,
-				amount: expense.amount,
-				precent: (expense.amount / sumAmount) * 100,
-				transactions: expense.transactions,
+				name: category.name,
+				amount: category.amount,
+				precent: (category.amount / sumAmount) * 100,
+				transactions: category.transactions,
 			};
 		});
 }
