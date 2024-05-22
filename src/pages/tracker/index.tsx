@@ -13,6 +13,7 @@ import Categories from "./components/categories";
 function Tracker() {
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [sumAmount, setSumAmount] = useState(0);
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -43,12 +44,15 @@ function Tracker() {
 
 	const logout = async () => {
 		Logout()
-			.then(() => {
-				window.location.replace("/login");
+			.then((statusCode) => {
+				switch (statusCode) {
+					case StatusCode.OK:
+						return navigate("/login");
+					default:
+						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
+				}
 			})
-			.catch(() => {
-				alert("An error occurred. Please try again.");
-			});
+			.catch(alert);
 	};
 
 	return (
