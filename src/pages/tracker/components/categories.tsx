@@ -1,13 +1,13 @@
 import { CategoriesContext } from "pages/tracker/utilities/categories-context";
+import { Category as CategoryType } from "../utilities/types";
 import { pad02f } from "utilities/stringUtil";
 import { GetIcon } from "../utilities/icons";
 import { useContext } from "react";
-import { Category as CategoryType } from "../utilities/types";
 
 import CircularProgressBar from "pages/tracker/components/circular-progress-bar";
 import AddTransactionButton from "./add-transaction-button";
-import Colors from "pages/tracker/utilities/colors";
 import EditCategoryButton from "./edit-category-button";
+import Colors from "pages/tracker/utilities/colors";
 
 interface CategoryProps extends CategoryType {
 	showLine: boolean;
