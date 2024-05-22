@@ -34,9 +34,7 @@ function SignUp() {
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = event.target;
 
-		if (name === "username") {
-			usernameRef.current?.setCustomValidity("");
-		}
+		usernameRef.current?.setCustomValidity("");
 
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
