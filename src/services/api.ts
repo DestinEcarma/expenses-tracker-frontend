@@ -97,7 +97,7 @@ export async function GetTransactions(categoryId: string): Promise<[Transaction[
 		);
 }
 
-export async function AddTransaction(categoryId: string, amount: number, description: string): Promise<StatusCode> {
+export async function AddTransaction(categoryId: string, description: string, amount: number): Promise<StatusCode> {
 	return API.post(`${CATEGORY_PATH}/${categoryId}/transactions`, { amount, description }).then(SimpleResponseHanlder);
 }
 
