@@ -158,7 +158,7 @@ export async function AddTransaction(categoryId: string, description: string, am
 }
 
 export async function EditCategory(id: string, name: string, icon: string): Promise<StatusCode> {
-	return fetch(`${CATEGORY_URL}/${id}`, {
+	return fetch(`${CATEGORIES_URL}/${id}`, {
 		...PATCH_METHOD,
 		body: JSON.stringify({ name, icon }),
 	}).then((response) => {
