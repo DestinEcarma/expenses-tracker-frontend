@@ -1,7 +1,11 @@
-import axios, { AxiosResponse } from "axios";
-import { Transaction } from "pages/tracker/transactions/utilities/types";
+import { GetTransactionsData, Transaction } from "pages/tracker/transactions/utilities/types";
 import { Category } from "pages/tracker/utilities/types";
 import { StatusCode } from "utilities/status-code";
+import axios, { AxiosResponse } from "axios";
+
+interface RawTransaction extends Omit<Transaction, "createdAt"> {
+	createdAt: string;
+}
 
 const USER_PATH = `$/user`;
 const AUTH_PATH = `${USER_PATH}/auth`;
@@ -82,18 +86,21 @@ export async function DeleteCategory(id: string): Promise<StatusCode> {
 
 // Transactions endpoints
 
-export async function GetTransactions(categoryId: string): Promise<[Transaction[], StatusCode]> {
+export async function GetTransactions(categoryId: string): Promise<[GetTransactionsData, StatusCode]> {
 	return API.get(`${CATEGORY_PATH}/${categoryId}/transactions`)
-		.then(DateResponseHandler<Transaction[] & { createdAt: String }[]>)
+		.then(DateResponseHandler<{ category: Category; transactions: RawTransaction[] }>)
 		.then(
-			([transactions, status]) =>
+			([{ category, transactions }, status]) =>
 				[
-					transactions.map(({ createdAt, ...transaction }) => ({
-						...transaction,
-						createdAt: new Date(createdAt),
-					})),
+					{
+						category,
+						transactions: transactions.map(({ createdAt, ...transaction }) => ({
+							...transaction,
+							createdAt: new Date(createdAt),
+						})),
+					},
 					status,
-				] as [Transaction[], StatusCode],
+				] as [GetTransactionsData, StatusCode],
 		);
 }
 
