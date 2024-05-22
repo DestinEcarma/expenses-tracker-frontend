@@ -1,11 +1,12 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { SignUp as ApiSignUp, Auth } from "utilities/api";
-import PasswordToggle from "components/password-toggle";
 import { StatusCode } from "utilities/status-code";
 import { BsPersonFillDown } from "react-icons/bs";
 import { IoPersonSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { MdLock } from "react-icons/md";
+
+import PasswordToggle from "components/password-toggle";
 
 function SignUp() {
 	const [{ username, password, passwordConfirm }, setForm] = useState({
@@ -13,6 +14,8 @@ function SignUp() {
 		password: "",
 		passwordConfirm: "",
 	});
+	const [disabled, setDisabled] = useState(false);
+
 	const usernameRef = useRef<HTMLInputElement>(null);
 	const navigate = useNavigate();
 
@@ -41,6 +44,7 @@ function SignUp() {
 
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setDisabled(true);
 
 		ApiSignUp(username, password)
 			.then((statusCode) => {
@@ -55,7 +59,8 @@ function SignUp() {
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
 				}
 			})
-			.catch(alert);
+			.catch(alert)
+			.finally(() => setDisabled(false));
 	};
 
 	const [passwordType, button] = PasswordToggle("text-2xl text-gray-400 text-2xl text-gray-400");
@@ -113,7 +118,10 @@ function SignUp() {
 				</div>
 			</div>
 			<div className="flex flex-col gap-4 items-center">
-				<button className="text-white font-bold tracking-wider py-3 w-1/2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 transition-colors">
+				<button
+					disabled={disabled}
+					className="text-white font-bold tracking-wider py-3 w-1/2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 transition-colors disabled:bg-gray-400"
+				>
 					Sign Up
 				</button>
 				<a
