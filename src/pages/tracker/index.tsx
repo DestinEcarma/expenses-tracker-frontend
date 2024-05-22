@@ -22,7 +22,7 @@ function Tracker() {
 				switch (statusCode) {
 					case StatusCode.OK:
 						setCategories(categories);
-						setSumAmount(categories.reduce((acc, expense) => acc + expense.amount, 0));
+						setSumAmount(categories.reduce((acc, category) => acc + category.amount, 0));
 						return;
 					case StatusCode.UNAUTHORIZED:
 						return navigate("/login");
@@ -34,7 +34,7 @@ function Tracker() {
 	}, [navigate]);
 
 	useEffect(() => {
-		setSumAmount(categories.reduce((acc, expense) => acc + expense.amount, 0));
+		setSumAmount(categories.reduce((acc, category) => acc + category.amount, 0));
 	}, [categories]);
 
 	const thisMonth = new Date().toLocaleString("default", {
