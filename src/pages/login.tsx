@@ -13,6 +13,8 @@ function Login() {
 		username: "",
 		password: "",
 	});
+	const [disabled, setDisabled] = useState(false);
+
 	const usernameRef = useRef<HTMLInputElement>(null);
 	const passwordRef = useRef<HTMLInputElement>(null);
 	const navigate = useNavigate();
@@ -45,6 +47,7 @@ function Login() {
 
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
+		setDisabled(true);
 
 		ApiLogin(username, password)
 			.then((statusCode) => {
@@ -61,7 +64,8 @@ function Login() {
 						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
 				}
 			})
-			.catch(alert);
+			.catch(alert)
+			.finally(() => setDisabled(false));
 	};
 
 	return (
@@ -105,8 +109,9 @@ function Login() {
 			</div>
 			<div className="flex flex-col gap-4 items-center">
 				<button
+					disabled={disabled}
 					type="submit"
-					className=" text-white font-bold tracking-wider py-3 w-1/2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 transition-colors"
+					className="text-white font-bold tracking-wider py-3 w-1/2 rounded-full shadow-md bg-blue-500 hover:bg-blue-600 transition-colors disabled:bg-gray-400"
 				>
 					Login
 				</button>
