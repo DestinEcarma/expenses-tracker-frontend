@@ -9,7 +9,7 @@ const INTERNAL_SERVER_ERROR = 500;
 
 export type StatusCode = number;
 
-export const StatusCode = {
+export const StatusCodes = {
 	OK,
 	CREATED,
 	CONFLICT,
