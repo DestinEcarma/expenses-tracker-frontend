@@ -32,8 +32,8 @@
 		"lint:prettier": "prettier . --check",
 		"lint:eslint": "eslint . --ignore-path .gitignore",
 		"fix": "npm run fix:prettier && npm run fix:eslint",
-		"fix:prettier": "npm run lint:prettier --write",
-		"fix:eslint": "npm run lint:eslint --fix"
+		"fix:prettier": "prettier . --check --write",
+		"fix:eslint": "eslint . --ignore-path .gitignore --fix"
 	},
 	"eslintConfig": {
 		"extends": [
