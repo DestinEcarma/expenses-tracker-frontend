@@ -1,11 +1,11 @@
 import { useSetCategoriesContext } from "pages/tracker/utilities/categories-context";
+import { StatusCode } from "utilities/status-code";
+import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import { AddCategory } from "utilities/api";
 import { FaPlus } from "react-icons/fa6";
 
 import IconSelector from "./icon-selector";
-import { StatusCode } from "utilities/status-code";
-import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
 	closeModal: () => void;
@@ -16,6 +16,7 @@ function Modal({ closeModal, isModalOpen }: ModalProps) {
 	const [icon, setIcon] = useState("fa:FaHamburger");
 	const [name, setName] = useState("");
 	const [disabled, setDisabled] = useState(false);
+
 	const setCategories = useSetCategoriesContext();
 	const navigate = useNavigate();
 
