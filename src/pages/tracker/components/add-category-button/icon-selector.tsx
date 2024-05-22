@@ -1,14 +1,14 @@
-import { GetIcon, Icons } from "pages/tracker/utilities/icons";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { GetIcon, Icons } from "pages/tracker/utilities/icons";
 
 interface SelectorProps {
 	setIcon: (name: string) => void;
 }
 
 interface IconSelectorProps {
-	icon: string;
-	setIcon: Dispatch<SetStateAction<string>>;
 	setOffset?: Dispatch<SetStateAction<boolean>>;
+	setIcon: Dispatch<SetStateAction<string>>;
+	icon: string;
 }
 
 function Selector({ setIcon }: SelectorProps) {
