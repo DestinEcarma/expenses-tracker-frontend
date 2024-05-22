@@ -2,7 +2,7 @@ import { useSetCategoriesContext } from "pages/tracker/utilities/categories-cont
 import { StatusCode } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
-import { AddCategory } from "utilities/api";
+import { AddCategory } from "services/api";
 import { FaPlus } from "react-icons/fa6";
 
 import IconSelector from "./icon-selector";

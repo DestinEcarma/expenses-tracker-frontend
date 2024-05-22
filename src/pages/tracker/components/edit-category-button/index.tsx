@@ -1,5 +1,5 @@
 import { useSetCategoriesContext } from "../../utilities/categories-context";
-import { DeleteCategory, EditCategory } from "utilities/api";
+import { DeleteCategory, EditCategory } from "services/api";
 import { StatusCode } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";

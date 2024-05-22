@@ -2,7 +2,7 @@ import { useSetCategoriesContext } from "pages/tracker/utilities/categories-cont
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { StatusCode } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
-import { AddTransaction } from "utilities/api";
+import { AddTransaction } from "services/api";
 import { FaPlus } from "react-icons/fa";
 
 interface AddTransactionButtonProps {

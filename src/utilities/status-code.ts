@@ -7,6 +7,8 @@ const CONFLICT = 409;
 
 const INTERNAL_SERVER_ERROR = 500;
 
+export type StatusCode = number;
+
 export const StatusCode = {
 	OK,
 	CREATED,
