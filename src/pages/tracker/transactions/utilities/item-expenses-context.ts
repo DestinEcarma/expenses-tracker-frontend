@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, createContext, useContext } from "react";
-import { Transactions } from "./types";
+import { Transaction } from "./types";
 
 export const CategoryIdContext = createContext<string>("");
-export const TransactionsContext = createContext<Transactions[]>([]);
-export const SetTransactionsContext = createContext<Dispatch<SetStateAction<Transactions[]>> | undefined>(undefined);
+export const TransactionsContext = createContext<Transaction[]>([]);
+export const SetTransactionsContext = createContext<Dispatch<SetStateAction<Transaction[]>> | undefined>(undefined);
 
 export function useTransactionsContext() {
 	const setTransactions = useContext(SetTransactionsContext);

@@ -1,6 +1,6 @@
 import { Category } from "pages/tracker/utilities/types";
 
-export interface Transactions {
+export interface Transaction {
 	id: string;
 	amount: number;
 	description: string;
@@ -9,5 +9,5 @@ export interface Transactions {
 
 export interface GetTransactionsData {
 	category: Category;
-	transactions: Transactions[];
+	transactions: Transaction[];
 }

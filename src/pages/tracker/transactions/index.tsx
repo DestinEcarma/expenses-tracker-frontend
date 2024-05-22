@@ -1,5 +1,5 @@
 import { TransactionsContext, SetTransactionsContext, CategoryIdContext } from "./utilities/item-expenses-context";
-import { Transactions as TransactionsType } from "./utilities/types";
+import { Transaction as TransactionsType } from "./utilities/types";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { StatusCode } from "utilities/status-code";
 import { GetTransactions } from "utilities/api";
@@ -22,6 +22,8 @@ function CategoryItems() {
 	useEffect(() => {
 		const id = searchParams.get("id");
 
+		console.log(id);
+
 		if (id) {
 			setCategoryId(id);
 		} else {
@@ -30,6 +32,8 @@ function CategoryItems() {
 	}, [searchParams, navigate]);
 
 	useEffect(() => {
+		if (!categoryId) return;
+
 		GetTransactions(categoryId)
 			.then(([{ category, transactions }, statusCode]) => {
 				switch (statusCode) {
