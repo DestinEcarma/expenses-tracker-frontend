@@ -1,8 +1,9 @@
 import { useSetCategoriesContext } from "pages/tracker/utilities/categories-context";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import { AddTransaction } from "utilities/api";
 import { StatusCode } from "utilities/status-code";
+import { useNavigate } from "react-router-dom";
+import { AddTransaction } from "utilities/api";
+import { FaPlus } from "react-icons/fa";
 
 interface AddTransactionButtonProps {
 	name: string;
@@ -19,13 +20,15 @@ interface ModalProps {
 function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 	const [description, setDescription] = useState("");
 	const [amount, setAmount] = useState("0");
+	const [disabled, setDisabled] = useState(false);
 
-	const setCategories = useSetCategoriesContext();
 	const amountInputRef = useRef<HTMLInputElement>(null);
+	const setCategories = useSetCategoriesContext();
+	const navigate = useNavigate();
 
 	const numberRegex = /^(^\.\d*$)?(^\d*\.\d$)?(^\d*\.)?(\d*)*$/;
 
-	const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+	const onSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		if (parseFloat(amount) <= 0) {
@@ -34,42 +37,35 @@ function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 			return;
 		}
 
-		try {
-			const statusCode = await AddTransaction(id, description, parseFloat(amount));
+		setDisabled(true);
 
-			switch (statusCode) {
-				case StatusCode.CREATED:
-					setCategories((prev) => {
-						return prev.map((category) => {
-							if (category.id === id) {
-								category.amount += parseFloat(amount);
-								category.transactions++;
-							}
+		AddTransaction(id, description, parseFloat(amount))
+			.then((statusCode) => {
+				switch (statusCode) {
+					case StatusCode.CREATED:
+						setCategories((prev) => {
+							return prev.map((category) => {
+								if (category.id === id) {
+									category.amount += parseFloat(amount);
+									category.transactions++;
+								}
 
-							return category;
+								return category;
+							});
 						});
-					});
-					break;
-				case StatusCode.UNAUTHORIZED:
-					return window.location.replace("/login");
-				case StatusCode.BAD_REQUEST:
-					amountInputRef.current?.setCustomValidity("An error occurred. Please try again.");
-					amountInputRef.current?.reportValidity();
-					return;
-				default:
-					console.error(`Status Code: ${statusCode} :: An error occurred.`);
-					return;
-			}
-		} catch (error) {
-			console.error(error);
-		}
-
-		setTimeout(() => {
-			setDescription("");
-			setAmount("0");
-		}, 200);
-
-		closeModal();
+						return;
+					case StatusCode.UNAUTHORIZED:
+						return navigate("/login");
+					case StatusCode.BAD_REQUEST:
+						amountInputRef.current?.setCustomValidity("An error occurred. Please try again.");
+						amountInputRef.current?.reportValidity();
+						return;
+					default:
+						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
+				}
+			})
+			.catch(alert)
+			.finally(closeModal);
 	};
 
 	const amountHanlder = (event: ChangeEvent<HTMLInputElement>) => {
@@ -110,14 +106,16 @@ function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 					<div className="flex justify-between text-white font-bold">
 						<button
 							onClick={closeModal}
+							disabled={disabled}
 							type="button"
-							className="w-1/4 rounded-md p-2 bg-red-500 hover:bg-red-600 transition-colors shadow-md"
+							className="w-1/4 rounded-md p-2 bg-red-500 hover:bg-red-600 transition-colors shadow-md disabled:bg-gray-400"
 						>
 							Close
 						</button>
 						<button
+							disabled={disabled}
 							type="submit"
-							className="w-1/4 rounded-md p-2 bg-green-500 hover:bg-green-600 transition-colors shadow-md"
+							className="w-1/4 rounded-md p-2 bg-green-500 hover:bg-green-600 transition-colors shadow-md disabled:bg-gray-400"
 						>
 							Submit
 						</button>
