@@ -1,6 +1,6 @@
 import { GetTransactionsData, Transaction } from "pages/tracker/transactions/utilities/types";
 import { Category } from "pages/tracker/utilities/types";
-import { StatusCodes } from "utilities/status-code";
+import { StatusCode, StatusCodes } from "utilities/status-code";
 import axios, { AxiosResponse } from "axios";
 
 interface RawTransaction extends Omit<Transaction, "createdAt"> {
