@@ -25,7 +25,7 @@ function Modal({ closeModal, id, name, icon, isModalOpen }: ModalProps) {
 	const [newName, setNewName] = useState("");
 	const [newIcon, setNewIcon] = useState(icon);
 
-	const setCategoryExpenses = useSetCategoriesContext();
+	const setCategories = useSetCategoriesContext();
 	const navigate = useNavigate();
 
 	const deleteButton = () => {
@@ -35,7 +35,7 @@ function Modal({ closeModal, id, name, icon, isModalOpen }: ModalProps) {
 			.then((statusCode) => {
 				switch (statusCode) {
 					case StatusCode.OK:
-						setCategoryExpenses((prev) => prev.filter((category) => category.id !== id));
+						setCategories((prev) => prev.filter((category) => category.id !== id));
 						return;
 					case StatusCode.UNAUTHORIZED:
 						return navigate("/login");
@@ -55,7 +55,7 @@ function Modal({ closeModal, id, name, icon, isModalOpen }: ModalProps) {
 			.then((statusCode) => {
 				switch (statusCode) {
 					case StatusCode.OK:
-						setCategoryExpenses((prev) => {
+						setCategories((prev) => {
 							return prev.map((category) => {
 								return category.id === id ? { ...category, name: newName, icon: newIcon } : category;
 							});

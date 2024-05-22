@@ -1,4 +1,4 @@
-import { TransactionsContext, SetTransactionsContext, CategoryIdContext } from "./utilities/item-expenses-context";
+import { TransactionsContext, SetTransactionsContext, CategoryIdContext } from "./utilities/transactions-context";
 import { Transaction as TransactionsType } from "./utilities/types";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { StatusCode } from "utilities/status-code";

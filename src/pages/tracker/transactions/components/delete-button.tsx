@@ -1,7 +1,7 @@
 import { FormEvent, useContext, useState } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { DeleteTransaction } from "utilities/api";
-import { CategoryIdContext, useTransactionsContext } from "../utilities/item-expenses-context";
+import { CategoryIdContext, useTransactionsContext } from "../utilities/transactions-context";
 
 interface DeleteButtonProps {
 	id: string;
