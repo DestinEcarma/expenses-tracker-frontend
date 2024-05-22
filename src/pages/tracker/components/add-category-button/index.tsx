@@ -1,5 +1,5 @@
 import { useSetCategoriesContext } from "pages/tracker/utilities/categories-context";
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { FormEvent, useState } from "react";
 import { AddCategory } from "utilities/api";
 import { FaPlus } from "react-icons/fa6";
 
@@ -8,11 +8,11 @@ import { StatusCode } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
-	setIsModalOpen: Dispatch<SetStateAction<number>>;
+	closeModal: () => void;
 	isModalOpen: number;
 }
 
-function Modal({ setIsModalOpen, isModalOpen }: ModalProps) {
+function Modal({ closeModal, isModalOpen }: ModalProps) {
 	const [icon, setIcon] = useState("fa:FaHamburger");
 	const [name, setName] = useState("");
 	const [disabled, setDisabled] = useState(false);
@@ -36,10 +36,7 @@ function Modal({ setIsModalOpen, isModalOpen }: ModalProps) {
 				}
 			})
 			.catch(alert)
-			.then(() => {
-				setIsModalOpen(-1);
-				setTimeout(() => setIsModalOpen(0), 200);
-			});
+			.finally(closeModal);
 	};
 
 	return (
@@ -78,6 +75,11 @@ function Modal({ setIsModalOpen, isModalOpen }: ModalProps) {
 function AddCategoryButton() {
 	const [isModalOpen, setIsModalOpen] = useState(0);
 
+	const closeModal = () => {
+		setTimeout(() => setIsModalOpen(0), 200);
+		setIsModalOpen(-1);
+	};
+
 	return (
 		<>
 			{isModalOpen !== 0 && (
@@ -87,7 +89,7 @@ function AddCategoryButton() {
 				></div>
 			)}
 			<div className="relative">
-				{isModalOpen !== 0 && <Modal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+				{isModalOpen !== 0 && <Modal isModalOpen={isModalOpen} closeModal={closeModal} />}
 				<button
 					onClick={() =>
 						setIsModalOpen((prev) => {
