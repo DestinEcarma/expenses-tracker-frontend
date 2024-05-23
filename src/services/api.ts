@@ -7,7 +7,7 @@ interface RawTransaction extends Omit<Transaction, "createdAt"> {
 	createdAt: string;
 }
 
-const USER_PATH = `$/user`;
+const USER_PATH = "/user";
 const AUTH_PATH = `${USER_PATH}/auth`;
 const TRAKCER_PATH = `${AUTH_PATH}/tracker`;
 const CATEGORY_PATH = `${TRAKCER_PATH}/category`;
