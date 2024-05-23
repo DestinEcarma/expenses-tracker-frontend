@@ -4,6 +4,7 @@ import { StatusCodes } from "utilities/status-code";
 import { DeleteTransaction } from "services/api";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa6";
+import { AxiosError } from "axios";
 
 interface DeleteButtonProps {
 	id: string;
@@ -26,18 +27,11 @@ function Modal({ closeModal, id, isModalOpen }: ModalProps) {
 		setDisabled(true);
 
 		DeleteTransaction(categoryId, id)
-			.then((statusCode) => {
-				switch (statusCode) {
-					case StatusCodes.OK:
-						setTransactions((prev) => prev.filter((item) => item.id !== id));
-						return;
-					case StatusCodes.UNAUTHORIZED:
-						return navigate("/login");
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
+			.then(() => setTransactions((prev) => prev.filter((item) => item.id !== id)))
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return navigate("/login");
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
 			})
-			.catch(alert)
 			.finally(closeModal);
 	};
 

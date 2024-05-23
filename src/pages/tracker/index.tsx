@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { pad02f } from "utilities/stringUtil";
 import { Category } from "./utilities/types";
 import { useEffect, useState } from "react";
+import { AxiosError } from "axios";
 
 import AddCategoryButton from "./components/add-category-button";
 import Categories from "./components/categories";
@@ -18,19 +19,14 @@ function Tracker() {
 
 	useEffect(() => {
 		GetCategories()
-			.then(([categories, statusCode]) => {
-				switch (statusCode) {
-					case StatusCodes.OK:
-						setCategories(categories);
-						setSumAmount(categories.reduce((acc, category) => acc + category.amount, 0));
-						return;
-					case StatusCodes.UNAUTHORIZED:
-						return navigate("/login");
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
+			.then((categories) => {
+				setCategories(categories);
+				setSumAmount(categories.reduce((acc, category) => acc + category.amount, 0));
 			})
-			.catch(alert);
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return navigate("/login");
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
+			});
 	}, [navigate]);
 
 	useEffect(() => {
@@ -44,15 +40,8 @@ function Tracker() {
 
 	const logout = async () => {
 		Logout()
-			.then((statusCode) => {
-				switch (statusCode) {
-					case StatusCodes.OK:
-						return navigate("/login");
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
-			})
-			.catch(alert);
+			.then(() => navigate("/login"))
+			.catch((err: AxiosError) => alert(`Recieved an unexpected status code :: ${err.response?.status}.`));
 	};
 
 	return (

@@ -5,6 +5,7 @@ import { BsPersonFillDown } from "react-icons/bs";
 import { IoPersonSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { MdLock } from "react-icons/md";
+import { AxiosError } from "axios";
 
 import PasswordToggle from "components/password-toggle";
 
@@ -21,17 +22,11 @@ function SignUp() {
 
 	useEffect(() => {
 		Auth()
-			.then((statusCode) => {
-				switch (statusCode) {
-					case StatusCodes.OK:
-						return navigate("/tracker");
-					case StatusCodes.UNAUTHORIZED:
-						return;
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
-			})
-			.catch(alert);
+			.then(() => navigate("/tracker"))
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return;
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
+			});
 	}, [navigate]);
 
 	const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -47,19 +42,17 @@ function SignUp() {
 		setDisabled(true);
 
 		ApiSignUp(username, password)
-			.then((statusCode) => {
-				switch (statusCode) {
-					case StatusCodes.CREATED:
-						return window.location.replace("/tracker");
-					case StatusCodes.CONFLICT:
-						usernameRef.current?.setCustomValidity("Username already exists.");
+			.then(() => navigate("/tracker"))
+			.catch((err: AxiosError) => {
+				switch (err.response?.status) {
+					case StatusCodes.BAD_REQUEST:
+						usernameRef.current?.setCustomValidity("Invalid username or password.");
 						usernameRef.current?.reportValidity();
 						return;
 					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
+						alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
 				}
 			})
-			.catch(alert)
 			.finally(() => setDisabled(false));
 	};
 

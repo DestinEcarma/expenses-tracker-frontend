@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import { AddCategory } from "services/api";
 import { FaPlus } from "react-icons/fa6";
+import { AxiosError } from "axios";
 
 import IconSelector from "./icon-selector";
 
@@ -25,18 +26,11 @@ function Modal({ closeModal, isModalOpen }: ModalProps) {
 		setDisabled(true);
 
 		AddCategory(name, icon)
-			.then(([newCategory, statusCode]) => {
-				switch (statusCode) {
-					case StatusCodes.CREATED:
-						setCategories((prev) => [...prev, newCategory]);
-						return;
-					case StatusCodes.UNAUTHORIZED:
-						return navigate("/login");
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
+			.then((newCategory) => setCategories((prev) => [...prev, newCategory]))
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return navigate("/login");
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
 			})
-			.catch(alert)
 			.finally(closeModal);
 	};
 

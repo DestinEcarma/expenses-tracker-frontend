@@ -4,6 +4,7 @@ import { StatusCodes } from "utilities/status-code";
 import { useNavigate } from "react-router-dom";
 import { AddTransaction } from "services/api";
 import { FaPlus } from "react-icons/fa";
+import { AxiosError } from "axios";
 
 interface AddTransactionButtonProps {
 	name: string;
@@ -40,31 +41,22 @@ function Modal({ closeModal, isModalOpen, name, id }: ModalProps) {
 		setDisabled(true);
 
 		AddTransaction(id, description, parseFloat(amount))
-			.then((statusCode) => {
-				switch (statusCode) {
-					case StatusCodes.CREATED:
-						setCategories((prev) => {
-							return prev.map((category) => {
-								if (category.id === id) {
-									category.amount += parseFloat(amount);
-									category.transactions++;
-								}
+			.then(() =>
+				setCategories((prev) => {
+					return prev.map((category) => {
+						if (category.id === id) {
+							category.amount += parseFloat(amount);
+							category.transactions++;
+						}
 
-								return category;
-							});
-						});
-						return;
-					case StatusCodes.UNAUTHORIZED:
-						return navigate("/login");
-					case StatusCodes.BAD_REQUEST:
-						amountInputRef.current?.setCustomValidity("An error occurred. Please try again.");
-						amountInputRef.current?.reportValidity();
-						return;
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
+						return category;
+					});
+				}),
+			)
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return navigate("/login");
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
 			})
-			.catch(alert)
 			.finally(closeModal);
 	};
 

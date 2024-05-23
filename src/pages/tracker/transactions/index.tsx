@@ -6,6 +6,7 @@ import { GetTransactions } from "services/api";
 import { pad02f } from "utilities/stringUtil";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useEffect, useState } from "react";
+import { AxiosError } from "axios";
 
 import Transactions from "./components/transactions";
 
@@ -22,33 +23,23 @@ function CategoryItems() {
 	useEffect(() => {
 		const id = searchParams.get("id");
 
-		console.log(id);
-
-		if (id) {
-			setCategoryId(id);
-		} else {
-			navigate("/tracker");
-		}
+		if (id) return setCategoryId(id);
+		navigate("/tracker");
 	}, [searchParams, navigate]);
 
 	useEffect(() => {
 		if (!categoryId) return;
 
 		GetTransactions(categoryId)
-			.then(([{ category, transactions }, statusCode]) => {
-				switch (statusCode) {
-					case StatusCodes.OK:
-						setTitle(category.name);
-						setTransactions(transactions);
-						setSumAmount(transactions.reduce((acc, item) => acc + item.amount, 0));
-						return;
-					case StatusCodes.UNAUTHORIZED:
-						return navigate("/login");
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
+			.then(({ category, transactions }) => {
+				setTitle(category.name);
+				setTransactions(transactions);
+				setSumAmount(transactions.reduce((acc, item) => acc + item.amount, 0));
 			})
-			.catch(alert);
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return navigate("/login");
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
+			});
 	}, [categoryId, navigate]);
 
 	useEffect(() => {

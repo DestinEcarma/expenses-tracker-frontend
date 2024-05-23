@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { FaPencilAlt } from "react-icons/fa";
 import { FormEvent, useState } from "react";
 import { FaTrash } from "react-icons/fa6";
+import { AxiosError } from "axios";
 
 import IconSelector from "../add-category-button/icon-selector";
 
@@ -32,18 +33,11 @@ function Modal({ closeModal, id, name, icon, isModalOpen }: ModalProps) {
 		setDisabled(true);
 
 		DeleteCategory(id)
-			.then((statusCode) => {
-				switch (statusCode) {
-					case StatusCodes.OK:
-						setCategories((prev) => prev.filter((category) => category.id !== id));
-						return;
-					case StatusCodes.UNAUTHORIZED:
-						return navigate("/login");
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
+			.then(() => setCategories((prev) => prev.filter((category) => category.id !== id)))
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return navigate("/login");
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
 			})
-			.catch(alert)
 			.finally(closeModal);
 	};
 
@@ -52,22 +46,17 @@ function Modal({ closeModal, id, name, icon, isModalOpen }: ModalProps) {
 		setDisabled(true);
 
 		EditCategory(id, newName, newIcon)
-			.then((statusCode) => {
-				switch (statusCode) {
-					case StatusCodes.OK:
-						setCategories((prev) => {
-							return prev.map((category) => {
-								return category.id === id ? { ...category, name: newName, icon: newIcon } : category;
-							});
-						});
-						return;
-					case StatusCodes.UNAUTHORIZED:
-						return navigate("/login");
-					default:
-						throw new Error(`Recieved an unexpected status code :: ${statusCode}.`);
-				}
+			.then(() =>
+				setCategories((prev) => {
+					return prev.map((category) => {
+						return category.id === id ? { ...category, name: newName, icon: newIcon } : category;
+					});
+				}),
+			)
+			.catch((err: AxiosError) => {
+				if (err.response?.status === StatusCodes.UNAUTHORIZED) return navigate("/login");
+				alert(`Recieved an unexpected status code :: ${err.response?.status}.`);
 			})
-			.catch(alert)
 			.finally(closeModal);
 	};
 
