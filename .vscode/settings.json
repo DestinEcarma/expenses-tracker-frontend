@@ -1,11 +1,4 @@
 {
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"prettier.singleQuote": false,
-	"prettier.printWidth": 120,
-	"prettier.useTabs": true,
-	"prettier.semi": true,
-	"prettier.tabWidth": 4,
-	"editor.tabSize": 4,
 	"[typescriptreact]": {
 		"prettier.tabWidth": 2,
 		"editor.tabSize": 2
